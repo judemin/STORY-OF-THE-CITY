@@ -309,7 +309,6 @@ function addHeroPlaza() {
     [MX - 1, MY + 8], [MX, MY + 8], [MX + 1, MY + 8],
   ]) {
     cityTrees.push({ x: tx, y: ty, z: 0, variant: Math.abs(tx + ty) % 3 });
-    if ((tx + ty) % 3 === 0) cityDecos.push({ x: tx, y: ty, z: 0, type: 'bench' });
   }
   // Pocket park: between outer roads
   for (const [tx, ty] of [
@@ -423,34 +422,18 @@ function fillBlocks(types, occ, rand, pal, s, cfg) {
 
 // ── Lamps, props, decos ───────────────────────────────────────────────────────
 
-function addStreetFurniture(types, occ, rand, s, cfg) {
-  const isRoad = (x, y) => x >= 0 && y >= 0 && x < GRID_W && y < GRID_H && types[y][x] === 'road';
-
-  for (let y = 0; y < GRID_H; y++) {
-    for (let x = 0; x < GRID_W; x++) {
-      const type = types[y][x];
-      const axis = roadAxis(x, y);
-
-      if (type === 'road') {
-        const edge = !isRoad(x + 1, y) || !isRoad(x - 1, y) || !isRoad(x, y + 1) || !isRoad(x, y - 1);
-        if (edge && (x + y) % 3 === 0) cityLamps.push({ x, y, z: 0 });
-        if (rand() < 0.18 + cfg.props * 0.14)
-          cityProps.push({ x, y, z: 0, type: ['laneMark', 'barrier', 'cone', 'cabinet', 'hydrant'][Math.floor(rand() * 5)] });
-      }
-      if (type === 'plaza' || type === 'walk') {
-        if ((x + y) % 3 === 0) cityLamps.push({ x, y, z: 0 });
-        if (rand() < 0.40 + cfg.props * 0.22)
-          cityDecos.push({ x, y, z: 0, type: ['bench', 'planter', 'sign', 'bollard'][Math.floor(rand() * 4)] });
-        if (rand() < 0.30 + cfg.props * 0.20)
-          cityProps.push({ x, y, z: 0, type: ['kiosk', 'booth', 'stall', 'box', 'vent', 'utility'][Math.floor(rand() * 6)] });
-      }
-      if (type === 'park' || (type === 'walk' && rand() < 0.25)) {
-        if (rand() < 0.82) cityTrees.push({ x, y, z: 0, variant: Math.floor(rand() * 3) });
-        if (rand() < 0.35) cityProps.push({ x, y, z: 0, type: 'treePit' });
-      }
-      if (type === 'service' && rand() < 0.55)
-        cityProps.push({ x, y, z: 0, type: ['box', 'vent', 'cabinet', 'utility', 'barrier'][Math.floor(rand() * 5)] });
-    }
+function addStreetFurniture() {
+  // Foreground strip (layer 4, y=35): lamp at x%8===0, tree at x%8===4
+  for (let x = 0; x < GRID_W; x++) {
+    const rem = x % 8;
+    if (rem === 0) cityLamps.push({ x, y: 35, z: 0 });
+    else if (rem === 4) cityTrees.push({ x, y: 35, z: 0, variant: x % 3 });
+  }
+  // Mid-ground strip (layer 3, y=27): same pattern, offset by 2
+  for (let x = 0; x < GRID_W; x++) {
+    const rem = (x + 2) % 8;
+    if (rem === 0) cityLamps.push({ x, y: 27, z: 0 });
+    else if (rem === 4) cityTrees.push({ x, y: 27, z: 0, variant: (x + 1) % 3 });
   }
 }
 
@@ -542,7 +525,7 @@ export function buildCity() {
   fillBlocks(types, occ, rand, pal, s, cfg);
 
   // 6. Street furniture
-  addStreetFurniture(types, occ, rand, s, cfg);
+  addStreetFurniture();
 
   // 7. Traffic (stage-based density)
   addTraffic(types, rand, s);

@@ -388,48 +388,40 @@ function draw2DCar(tr, carX, carY, tod) {
 // ── Tree renderer ─────────────────────────────────────────────────────────────
 
 function draw2DTree(sx, baseY, size, tc, amb, lt) {
-  const tw = Math.max(2, Math.floor(size*0.13));
-  const th = Math.floor(size*0.36);
+  const tw = Math.max(2, Math.floor(size*0.12));
+  const th = Math.floor(size*0.34);
   const r  = Math.floor(size*0.50);
-  const vx = ((sx*37)%7)-3;
-  // Main canopy center (all sub-circles are positioned RELATIVE to this)
-  const mx = sx - Math.floor(r*0.08) + vx;
-  const cy = baseY - th - Math.floor(r*0.80);
+  const vx = ((sx*37)%5)-2;
+  const mx = sx + vx;
+  const cy = baseY - th - Math.floor(r*0.84);
 
-  // Trunk
-  ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.54);
+  // Trunk — clean, no base broadening
+  ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.52);
   ctx.fillRect(sx-(tw>>1), baseY-th, tw, th);
-  if (th > 4) ctx.fillRect(sx-(tw>>1)-1, baseY-3, tw+2, 3);
 
-  // Main canopy base
-  ctx.fillStyle = tint(tc.c1, amb, lt*0.62);
+  // Main canopy
+  ctx.fillStyle = tint(tc.c1, amb, lt*0.60);
   ctx.beginPath(); ctx.arc(mx, cy, r, 0, Math.PI*2); ctx.fill();
 
-  // Right sub — guaranteed inside: dist(r*0.45,r*0.18)+r*0.42 = r*0.905 ≤ r
-  ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.56);
-  ctx.beginPath(); ctx.arc(mx+Math.floor(r*0.45), cy+Math.floor(r*0.18), Math.floor(r*0.42), 0, Math.PI*2); ctx.fill();
+  // Interior shadow — dist+r=sqrt(0.14²+0.18²)+0.52=0.748r, fully inside
+  ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.46);
+  ctx.beginPath(); ctx.arc(mx+Math.floor(r*0.14), cy+Math.floor(r*0.18), Math.floor(r*0.52), 0, Math.PI*2); ctx.fill();
 
-  // Left sub — guaranteed inside: dist(r*0.46,r*0.10)+r*0.44 = r*0.911 ≤ r
-  ctx.fillStyle = tint(tc.c1, amb, lt*0.59);
-  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.46), cy+Math.floor(r*0.10), Math.floor(r*0.44), 0, Math.PI*2); ctx.fill();
-
-  // Highlight — guaranteed inside: dist(r*0.24,r*0.32)+r*0.28 = r*0.680 ≤ r
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.28), amb, lt*0.76);
-  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.24), cy-Math.floor(r*0.32), Math.floor(r*0.28), 0, Math.PI*2); ctx.fill();
-
-  // Glint — guaranteed inside: dist(r*0.34,r*0.48)+r*0.14 = r*0.728 ≤ r
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.44), amb, lt*0.70);
-  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.34), cy-Math.floor(r*0.48), Math.floor(r*0.14), 0, Math.PI*2); ctx.fill();
+  // Highlight — dist+r=sqrt(0.20²+0.28²)+0.30=0.644r, fully inside
+  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.26), amb, lt*0.76);
+  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.20), cy-Math.floor(r*0.28), Math.floor(r*0.30), 0, Math.PI*2); ctx.fill();
 }
 
 // ── Lamp renderer ─────────────────────────────────────────────────────────────
 
 function draw2DLamp(lpx, baseY, poleH, on, amb, lt) {
   const pC = tint('#505868', amb, lt*0.44);
-  ctx.fillStyle = tint('#444c58', amb, lt*0.46);
-  ctx.fillRect(lpx-3, baseY-4, 6, 4);
+  // Slim base — 3×2, not bench-like
+  ctx.fillStyle = tint('#3c4450', amb, lt*0.42);
+  ctx.fillRect(lpx-1, baseY-2, 3, 2);
+  // Pole
   ctx.fillStyle = pC;
-  ctx.fillRect(lpx-1, baseY-poleH, 2, poleH-4);
+  ctx.fillRect(lpx-1, baseY-poleH, 2, poleH-2);
   ctx.fillRect(lpx,   baseY-poleH, 10, 2);
   ctx.fillRect(lpx+9, baseY-poleH, 2, 4);
   ctx.fillRect(lpx+8, baseY-poleH+4, 5, 2);
@@ -438,11 +430,8 @@ function draw2DLamp(lpx, baseY, poleH, on, amb, lt) {
   ctx.fillStyle = on ? '#fffab0' : tint('#686e80',amb,lt*0.32);
   ctx.fillRect(lpx+8, baseY-poleH+3, 5, 3);
   if (on) {
-    // Small warm pool on ground below lamp
-    ctx.fillStyle = '#786440';
-    ctx.fillRect(lpx+2, baseY-6, 16, 2);
-    ctx.fillStyle = '#604e30';
-    ctx.fillRect(lpx-1, baseY-4, 22, 2);
+    ctx.fillStyle = '#685c38';
+    ctx.fillRect(lpx+5, baseY-3, 8, 1);
   }
 }
 
