@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --input-type=module)",
+      "Bash(node -e \"import\\('./src/world.js'\\).then\\(m => console.log\\('world.js OK:', Object.keys\\(m\\)\\)\\).catch\\(e => console.error\\('world.js ERROR:', e.message\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(python3 -m http.server 5173)",
+      "Bash(curl -s http://localhost:5173/)",
+      "WebSearch",
+      "Bash(npx --yes serve . -p 3000)"
+    ]
+  }
+}

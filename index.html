@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Story of the City</title>
+  <!-- Changed: split CSS by responsibility -->
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/hud.css" />
+  <link rel="stylesheet" href="styles/canvas.css" />
+</head>
+<body>
+
+  <div id="hud">
+    <span id="timer-display">00:00:00</span>
+    <button id="btn-start" class="hud-btn">START</button>
+    <button id="btn-pause" class="hud-btn">PAUSE</button>
+  </div>
+
+  <canvas id="city-canvas"></canvas>
+
+  <!-- Changed: use module bootstrap entry -->
+  <script type="module" src="src/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+/* Canvas – size and position controlled by resizeCanvas() in render.js */
+#city-canvas {
+  display: block;
+  position: fixed;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+}
