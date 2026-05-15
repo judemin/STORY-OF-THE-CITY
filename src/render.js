@@ -184,9 +184,9 @@ function draw2DBuilding(b, lyr, amb, lt, tod) {
       ? `rgb(${Math.min(255,cr/2+88)},${Math.min(255,cg/2+52)},${Math.min(255,cb/2+18)})`
       : tint('#98aec6', amb, tf * 0.74);
     ctx.fillRect(sx-(dfW>>1), gfTop+Math.round(gfH*0.08), dfW, Math.round(gfH*0.72));
-    ctx.fillStyle = night ? '#c07838' : tint('#3a4656', amb, tf*0.58);
+    ctx.fillStyle = tint('#3a4656', amb, tf*0.58 + (night?0.08:0));
     ctx.fillRect(x0-2, gfTop-Math.round(lyr.fh*0.16), bw+4, Math.round(lyr.fh*0.18));
-    ctx.fillStyle = night ? '#9c5a24' : tint('#2e3844', amb, tf*0.50);
+    ctx.fillStyle = tint('#2e3844', amb, tf*0.50 + (night?0.06:0));
     for (let i = 0; i < bw; i += 5) ctx.fillRect(x0+i, gfTop-Math.round(lyr.fh*0.16), 2, Math.round(lyr.fh*0.18));
   }
 
@@ -388,50 +388,63 @@ function draw2DCar(tr, carX, carY, tod) {
 // ── Tree renderer ─────────────────────────────────────────────────────────────
 
 function draw2DTree(sx, baseY, size, tc, amb, lt) {
-  const tw = Math.max(2, Math.floor(size*0.12));
-  const th = Math.floor(size*0.34);
+  const tw = Math.max(1, Math.floor(size*0.11));
+  const th = Math.floor(size*0.32);
   const r  = Math.floor(size*0.50);
   const vx = ((sx*37)%5)-2;
   const mx = sx + vx;
-  const cy = baseY - th - Math.floor(r*0.84);
+  const cy = baseY - th - Math.floor(r*0.82);
 
-  // Trunk — clean, no base broadening
-  ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.52);
+  // Trunk
+  ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.50);
   ctx.fillRect(sx-(tw>>1), baseY-th, tw, th);
 
-  // Main canopy
-  ctx.fillStyle = tint(tc.c1, amb, lt*0.60);
-  ctx.beginPath(); ctx.arc(mx, cy, r, 0, Math.PI*2); ctx.fill();
+  // Shadow base — slightly lower, creates bottom-shadow crescent naturally
+  ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.38);
+  ctx.beginPath(); ctx.arc(mx, cy+Math.floor(r*0.16), r, 0, Math.PI*2); ctx.fill();
 
-  // Interior shadow — dist+r=sqrt(0.14²+0.18²)+0.52=0.748r, fully inside
-  ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.46);
-  ctx.beginPath(); ctx.arc(mx+Math.floor(r*0.14), cy+Math.floor(r*0.18), Math.floor(r*0.52), 0, Math.PI*2); ctx.fill();
+  // Main lit canopy — slightly smaller, slightly higher, covers most of shadow
+  ctx.fillStyle = tint(tc.c1, amb, lt*0.64);
+  ctx.beginPath(); ctx.arc(mx, cy-Math.floor(r*0.06), Math.floor(r*0.88), 0, Math.PI*2); ctx.fill();
 
-  // Highlight — dist+r=sqrt(0.20²+0.28²)+0.30=0.644r, fully inside
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.26), amb, lt*0.76);
-  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.20), cy-Math.floor(r*0.28), Math.floor(r*0.30), 0, Math.PI*2); ctx.fill();
+  // Top highlight — well inside main circle (clearance ~0.26r)
+  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.18), amb, lt*0.72);
+  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.10), cy-Math.floor(r*0.22), Math.floor(r*0.38), 0, Math.PI*2); ctx.fill();
 }
 
 // ── Lamp renderer ─────────────────────────────────────────────────────────────
 
 function draw2DLamp(lpx, baseY, poleH, on, amb, lt) {
-  const pC = tint('#505868', amb, lt*0.44);
-  // Slim base — 3×2, not bench-like
-  ctx.fillStyle = tint('#3c4450', amb, lt*0.42);
-  ctx.fillRect(lpx-1, baseY-2, 3, 2);
-  // Pole
+  const pC = tint('#4a5264', amb, lt*0.50);
+  // Thin 1px pole
   ctx.fillStyle = pC;
-  ctx.fillRect(lpx-1, baseY-poleH, 2, poleH-2);
-  ctx.fillRect(lpx,   baseY-poleH, 10, 2);
-  ctx.fillRect(lpx+9, baseY-poleH, 2, 4);
-  ctx.fillRect(lpx+8, baseY-poleH+4, 5, 2);
-  ctx.fillStyle = on ? '#f0d838' : tint('#606878',amb,lt*0.36);
-  ctx.fillRect(lpx+7, baseY-poleH+2, 7, 5);
-  ctx.fillStyle = on ? '#fffab0' : tint('#686e80',amb,lt*0.32);
-  ctx.fillRect(lpx+8, baseY-poleH+3, 5, 3);
+  ctx.fillRect(lpx, baseY-poleH, 1, poleH);
+  // Short horizontal arm
+  ctx.fillRect(lpx, baseY-poleH, 7, 1);
+  // Vertical drop at arm end
+  ctx.fillRect(lpx+6, baseY-poleH, 1, 4);
+  // Lamp head — small clean rectangle
+  ctx.fillStyle = on ? '#e8e0b0' : tint('#50586c', amb, lt*0.36);
+  ctx.fillRect(lpx+4, baseY-poleH+3, 4, 3);
+  // Lens glow center
+  ctx.fillStyle = on ? '#fffce0' : tint('#60687c', amb, lt*0.30);
+  ctx.fillRect(lpx+5, baseY-poleH+4, 2, 1);
+
   if (on) {
-    ctx.fillStyle = '#685c38';
-    ctx.fillRect(lpx+5, baseY-3, 8, 1);
+    // Ground light pool — oval, semi-transparent, size varies by lamp position
+    const poolR = Math.max(5, Math.floor(poleH * 0.72) + (lpx % 4));
+    ctx.save();
+    ctx.translate(lpx+5, baseY+2);
+    ctx.scale(1, 0.28);
+    ctx.beginPath(); ctx.arc(0, 0, poolR, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,242,195,0.20)'; ctx.fill();
+    ctx.restore();
+    ctx.save();
+    ctx.translate(lpx+5, baseY+1);
+    ctx.scale(1, 0.28);
+    ctx.beginPath(); ctx.arc(0, 0, Math.floor(poolR*0.52), 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,250,215,0.32)'; ctx.fill();
+    ctx.restore();
   }
 }
 
@@ -544,8 +557,10 @@ export function render() {
       const sty = ((i*223+19)^(i*47))%Math.floor(HORIZON_Y*0.85);
       const tier = i<14?2:i<44?1:0;
       const baseA = tier===2?sAlpha:tier===1?sAlpha*0.60:sAlpha*0.30;
-      const tw = i%3===0?0.22*(Math.sin((animTick/160+i*2.1)*Math.PI*2)*0.5+0.5):0;
-      const a = Math.max(0.03, baseA*(1+tw*0.40));
+      const twinkle = i%2===0;
+      const tw = twinkle ? Math.sin((animTick/200+i*1.7)*Math.PI*2)*0.5+0.5 : 0;
+      const amp = tier===2?0.44:tier===1?0.26:0.14;
+      const a = Math.max(0.03, baseA + (twinkle ? tw*amp*baseA : 0));
       ctx.fillStyle = `rgba(${tier===2?'255,248,235':tier===1?'215,230,255':'170,195,238'},${a.toFixed(2)})`;
       ctx.fillRect(stx, sty, tier===2?2:1, tier===2?2:1);
     }
