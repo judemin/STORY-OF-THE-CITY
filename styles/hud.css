@@ -121,3 +121,51 @@
   color: #ddddff;
   background: #1a1a2e;
 }
+
+/* ── Mobile overrides (≤768px) ── */
+
+@media (max-width: 768px) {
+  #hud {
+    top: auto;
+    bottom: 0;
+    height: 56px;
+    background: rgba(6, 6, 16, 0.78);
+    border-bottom: none;
+    border-top: 1px solid #1a1a2a;
+    gap: 28px;
+  }
+
+  #timer-display {
+    font-size: 10px;
+    letter-spacing: 2px;
+    min-width: 68px;
+  }
+
+  .hud-btn {
+    font-size: 7px;
+    padding: 9px 16px;
+    border-width: 1px;
+  }
+
+  #pause-card {
+    padding: 40px 28px;
+    gap: 22px;
+    width: 88vw;
+    max-width: 320px;
+  }
+
+  #pause-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  #pause-tagline {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  #pause-action-btn {
+    font-size: 7px;
+    padding: 10px 22px;
+  }
+}

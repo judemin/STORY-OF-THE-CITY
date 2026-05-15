@@ -5,7 +5,8 @@ import { MAX_H } from './constants.js';
 const LS_KEY = 'sotc_v1';
 
 function todayStr() {
-  const d = new Date();
+  // Day boundary = 06:00. Shift back 6h so midnight~5:59 still belongs to previous day.
+  const d = new Date(Date.now() - 6 * 3600 * 1000);
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 

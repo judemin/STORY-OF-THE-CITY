@@ -13,17 +13,34 @@ let DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
 let animTick = 0;
 
 export function resizeCanvas() {
+  const isMobile = window.innerWidth <= 768;
   const hud = document.getElementById('hud');
-  const hudH = hud ? hud.offsetHeight : 40;
-  const availW = window.innerWidth;
-  const availH = window.innerHeight - hudH;
-  const ratio = LOGICAL_W / LOGICAL_H;
-  let displayW, displayH;
-  if (availW / availH > ratio) { displayH = availH; displayW = Math.floor(displayH * ratio); }
-  else { displayW = availW; displayH = Math.floor(displayW / ratio); }
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let displayW, displayH, left, top;
+
+  if (isMobile) {
+    // Zoom-fill: scale to cover full viewport, crop overflow, no black bars
+    const scale = Math.max(vw / LOGICAL_W, vh / LOGICAL_H);
+    displayW = Math.round(LOGICAL_W * scale);
+    displayH = Math.round(LOGICAL_H * scale);
+    left = Math.floor((vw - displayW) / 2);
+    top  = Math.floor((vh - displayH) / 2);
+  } else {
+    // Desktop: letterbox/pillarbox below HUD — unchanged
+    const hudH = hud ? hud.offsetHeight : 40;
+    const availW = vw;
+    const availH = vh - hudH;
+    const ratio  = LOGICAL_W / LOGICAL_H;
+    if (availW / availH > ratio) { displayH = availH; displayW = Math.floor(displayH * ratio); }
+    else { displayW = availW; displayH = Math.floor(displayW / ratio); }
+    left = Math.floor((availW - displayW) / 2);
+    top  = hudH + Math.floor((availH - displayH) / 2);
+  }
+
   canvas.style.position = 'fixed';
-  canvas.style.left   = `${Math.floor((availW - displayW) / 2)}px`;
-  canvas.style.top    = `${hudH + Math.floor((availH - displayH) / 2)}px`;
+  canvas.style.left   = `${left}px`;
+  canvas.style.top    = `${top}px`;
   canvas.style.width  = `${displayW}px`;
   canvas.style.height = `${displayH}px`;
   DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
