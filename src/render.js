@@ -175,19 +175,11 @@ function draw2DBuilding(b, lyr, amb, lt, tod) {
 
   if (lyr.fh < 7) return;
 
-  // Storefront (arch 0, 3)
+  // Ground-floor divider line (arch 0, 3) — thin dark line only
   if (arch === 0 || arch === 3) {
-    const gfTop = lyr.baseY - Math.round(lyr.fh * 0.92);
-    const gfH   = Math.round(lyr.fh * 0.82);
-    const dfW   = Math.max(4, Math.floor(bw * 0.58));
-    ctx.fillStyle = night
-      ? `rgb(${Math.min(255,cr/2+88)},${Math.min(255,cg/2+52)},${Math.min(255,cb/2+18)})`
-      : tint('#98aec6', amb, tf * 0.74);
-    ctx.fillRect(sx-(dfW>>1), gfTop+Math.round(gfH*0.08), dfW, Math.round(gfH*0.72));
-    ctx.fillStyle = tint('#3a4656', amb, tf*0.58 + (night?0.08:0));
-    ctx.fillRect(x0-2, gfTop-Math.round(lyr.fh*0.16), bw+4, Math.round(lyr.fh*0.18));
-    ctx.fillStyle = tint('#2e3844', amb, tf*0.50 + (night?0.06:0));
-    for (let i = 0; i < bw; i += 5) ctx.fillRect(x0+i, gfTop-Math.round(lyr.fh*0.16), 2, Math.round(lyr.fh*0.18));
+    const lineY = lyr.baseY - Math.round(lyr.fh * 0.92);
+    ctx.fillStyle = tint('#2c3444', amb, tf*0.54 + (night?0.06:0));
+    ctx.fillRect(x0, lineY, bw, 1);
   }
 
   // Tower cap (arch 1, 5)
@@ -388,28 +380,24 @@ function draw2DCar(tr, carX, carY, tod) {
 // ── Tree renderer ─────────────────────────────────────────────────────────────
 
 function draw2DTree(sx, baseY, size, tc, amb, lt) {
-  const tw = Math.max(1, Math.floor(size*0.11));
-  const th = Math.floor(size*0.32);
-  const r  = Math.floor(size*0.50);
+  const tw = Math.max(1, Math.floor(size*0.10));
+  const th = Math.floor(size*0.26);
+  const r  = Math.floor(size*0.36);
   const vx = ((sx*37)%5)-2;
   const mx = sx + vx;
-  const cy = baseY - th - Math.floor(r*0.82);
+  const cy = baseY - th - r;
 
   // Trunk
   ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.50);
   ctx.fillRect(sx-(tw>>1), baseY-th, tw, th);
 
-  // Shadow base — slightly lower, creates bottom-shadow crescent naturally
-  ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.38);
-  ctx.beginPath(); ctx.arc(mx, cy+Math.floor(r*0.16), r, 0, Math.PI*2); ctx.fill();
+  // Darker base — bottom crescent shows as natural shadow, no explicit shadow circle
+  ctx.fillStyle = tint(darkenHex(tc.c1, 0.70), amb, lt*0.56);
+  ctx.beginPath(); ctx.arc(mx, cy, r, 0, Math.PI*2); ctx.fill();
 
-  // Main lit canopy — slightly smaller, slightly higher, covers most of shadow
-  ctx.fillStyle = tint(tc.c1, amb, lt*0.64);
-  ctx.beginPath(); ctx.arc(mx, cy-Math.floor(r*0.06), Math.floor(r*0.88), 0, Math.PI*2); ctx.fill();
-
-  // Top highlight — well inside main circle (clearance ~0.26r)
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.18), amb, lt*0.72);
-  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.10), cy-Math.floor(r*0.22), Math.floor(r*0.38), 0, Math.PI*2); ctx.fill();
+  // Main canopy — slightly smaller, slightly up, 2-tone without blobs
+  ctx.fillStyle = tint(tc.c1, amb, lt*0.66);
+  ctx.beginPath(); ctx.arc(mx, cy-Math.floor(r*0.12), Math.floor(r*0.82), 0, Math.PI*2); ctx.fill();
 }
 
 // ── Lamp renderer ─────────────────────────────────────────────────────────────
