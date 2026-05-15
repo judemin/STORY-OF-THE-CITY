@@ -76,10 +76,10 @@ const TILE_W_BASE = CW / GRID_W;
 const FLOOR_H_BASE = 13;
 
 const LAYERS = [
-  { yMin: 0,  yMax: 7,  baseY: 208, tw: TILE_W_BASE*0.24, fh: FLOOR_H_BASE*0.20, mute: 0.80 },
-  { yMin: 8,  yMax: 15, baseY: 264, tw: TILE_W_BASE*0.42, fh: FLOOR_H_BASE*0.36, mute: 0.58 },
-  { yMin: 16, yMax: 23, baseY: 326, tw: TILE_W_BASE*0.62, fh: FLOOR_H_BASE*0.56, mute: 0.30 },
-  { yMin: 24, yMax: 31, baseY: 382, tw: TILE_W_BASE*0.82, fh: FLOOR_H_BASE*0.78, mute: 0.12 },
+  { yMin: 0,  yMax: 7,  baseY: 208, tw: TILE_W_BASE*0.24, fh: FLOOR_H_BASE*0.20, mute: 0.88 },
+  { yMin: 8,  yMax: 15, baseY: 264, tw: TILE_W_BASE*0.42, fh: FLOOR_H_BASE*0.36, mute: 0.66 },
+  { yMin: 16, yMax: 23, baseY: 326, tw: TILE_W_BASE*0.62, fh: FLOOR_H_BASE*0.56, mute: 0.36 },
+  { yMin: 24, yMax: 31, baseY: 382, tw: TILE_W_BASE*0.82, fh: FLOOR_H_BASE*0.78, mute: 0.14 },
   { yMin: 32, yMax: 41, baseY: 390, tw: TILE_W_BASE*1.00, fh: FLOOR_H_BASE*1.00, mute: 0.00 },
 ];
 
@@ -138,27 +138,36 @@ function draw2DBuilding(b, lyr, amb, lt, tod) {
     }
   }
 
-  // Windows
+  // Windows — archetype-varied geometry + subtle night twinkle
   if (lyr.fh >= 5 && bw >= 5 && b.h > 1) {
-    const ww  = Math.max(2, Math.floor(lyr.tw * 0.22));
-    const wh  = Math.max(1, Math.floor(lyr.fh * 0.44));
-    const gap = Math.max(1, Math.floor(lyr.tw * 0.12));
-    const cols = Math.max(1, Math.floor((bw - gap*2) / (ww+gap)));
-    const xPad = (bw - (cols*ww + (cols-1)*gap)) >> 1;
+    let ww, wh, gap;
+    if (arch===1||arch===5) {
+      ww=Math.max(1,Math.floor(lyr.tw*0.14)); wh=Math.max(2,Math.floor(lyr.fh*0.54)); gap=Math.max(1,Math.floor(lyr.tw*0.09));
+    } else if (arch===0||arch===3) {
+      ww=Math.max(3,Math.floor(lyr.tw*0.30)); wh=Math.max(1,Math.floor(lyr.fh*0.30)); gap=Math.max(2,Math.floor(lyr.tw*0.16));
+    } else if (arch===2) {
+      ww=Math.max(1,Math.floor(lyr.tw*0.16)); wh=Math.max(1,Math.floor(lyr.fh*0.38)); gap=Math.max(2,Math.floor(lyr.tw*0.18));
+    } else {
+      ww=Math.max(2,Math.floor(lyr.tw*0.22)); wh=Math.max(1,Math.floor(lyr.fh*0.44)); gap=Math.max(1,Math.floor(lyr.tw*0.12));
+    }
+    const cols=Math.max(1,Math.floor((bw-gap*2)/(ww+gap)));
+    const xPad=(bw-(cols*ww+(cols-1)*gap))>>1;
 
-    for (let f = 0; f < b.h - 1; f++) {
-      const wy = lyr.baseY - Math.round((f+0.74)*lyr.fh) - wh;
-      if (wy < y0 || wy + wh > lyr.baseY) continue;
-      for (let c = 0; c < cols; c++) {
-        const wx = x0 + xPad + c*(ww+gap);
+    for (let f=0;f<b.h-1;f++) {
+      const wy=lyr.baseY-Math.round((f+0.74)*lyr.fh)-wh;
+      if (wy<y0||wy+wh>lyr.baseY) continue;
+      for (let c=0;c<cols;c++) {
+        const wx=x0+xPad+c*(ww+gap);
         if (night) {
-          ctx.fillStyle = '#f0d880';
-          ctx.fillRect(wx, wy, ww, wh);
-          if (ww >= 3) { ctx.fillStyle = '#fff8b8'; ctx.fillRect(wx+1, wy, 1, Math.min(wh,2)); }
+          const wseed=(b.x*7+b.y*13+f*5+c*3)&0xffff;
+          const dim=wseed%7===0?0.88+0.12*Math.sin((animTick/260+wseed*0.008)*Math.PI*2):1.0;
+          ctx.fillStyle=`rgb(${Math.round(240*dim)},${Math.round(216*dim)},${Math.round(128*dim)})`;
+          ctx.fillRect(wx,wy,ww,wh);
+          if (ww>=3){ctx.fillStyle=`rgb(${Math.min(255,Math.round(255*dim))},${Math.min(255,Math.round(248*dim))},${Math.min(255,Math.round(184*dim))})`;ctx.fillRect(wx+1,wy,1,Math.min(wh,2));}
         } else {
-          const [ar2, ag2, ab2] = amb;
-          ctx.fillStyle = `rgb(${Math.round(ar2*0.60+cr*0.18)},${Math.round(ag2*0.60+cg*0.16)},${Math.round(ab2*0.70+cb*0.08)})`;
-          ctx.fillRect(wx, wy, ww, wh);
+          const [ar2,ag2,ab2]=amb;
+          ctx.fillStyle=`rgb(${Math.round(ar2*0.60+cr*0.18)},${Math.round(ag2*0.60+cg*0.16)},${Math.round(ab2*0.70+cb*0.08)})`;
+          ctx.fillRect(wx,wy,ww,wh);
         }
       }
     }
@@ -379,38 +388,38 @@ function draw2DCar(tr, carX, carY, tod) {
 // ── Tree renderer ─────────────────────────────────────────────────────────────
 
 function draw2DTree(sx, baseY, size, tc, amb, lt) {
-  const tw = Math.max(2, Math.floor(size*0.14));
+  const tw = Math.max(2, Math.floor(size*0.13));
   const th = Math.floor(size*0.36);
   const r  = Math.floor(size*0.50);
   const vx = ((sx*37)%7)-3;
-  const cy = baseY - th - Math.floor(r*0.76);
+  // Main canopy center (all sub-circles are positioned RELATIVE to this)
+  const mx = sx - Math.floor(r*0.08) + vx;
+  const cy = baseY - th - Math.floor(r*0.80);
 
   // Trunk
-  ctx.fillStyle = tint(tc.trunk, amb, lt*0.50);
+  ctx.fillStyle = tint(tc.trunk, amb, Math.max(lt,0.08)*0.54);
   ctx.fillRect(sx-(tw>>1), baseY-th, tw, th);
-  if (th > 5) ctx.fillRect(sx-(tw>>1)-1, baseY-3, tw+2, 3);
+  if (th > 4) ctx.fillRect(sx-(tw>>1)-1, baseY-3, tw+2, 3);
 
-  // Main canopy (all colors: mixHex returns hex → safe to pass to tint)
+  // Main canopy base
   ctx.fillStyle = tint(tc.c1, amb, lt*0.62);
-  ctx.beginPath(); ctx.arc(sx-Math.floor(r*0.08)+vx, cy, r, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(mx, cy, r, 0, Math.PI*2); ctx.fill();
 
-  // Right cluster
-  const r2 = Math.floor(r*0.56);
+  // Right sub — guaranteed inside: dist(r*0.45,r*0.18)+r*0.42 = r*0.905 ≤ r
   ctx.fillStyle = tint(tc.c2||tc.c1, amb, lt*0.56);
-  ctx.beginPath(); ctx.arc(sx+Math.floor(r*0.68)+vx, cy+Math.floor(r*0.20), r2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(mx+Math.floor(r*0.45), cy+Math.floor(r*0.18), Math.floor(r*0.42), 0, Math.PI*2); ctx.fill();
 
-  // Left cluster
-  const r3 = Math.floor(r*0.44);
+  // Left sub — guaranteed inside: dist(r*0.46,r*0.10)+r*0.44 = r*0.911 ≤ r
   ctx.fillStyle = tint(tc.c1, amb, lt*0.59);
-  ctx.beginPath(); ctx.arc(sx-Math.floor(r*0.60)+vx, cy+Math.floor(r*0.12), r3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.46), cy+Math.floor(r*0.10), Math.floor(r*0.44), 0, Math.PI*2); ctx.fill();
 
-  // Highlight — mixHex(hex,hex) → hex → tint(hex) = valid chain
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.28), amb, lt*0.74);
-  ctx.beginPath(); ctx.arc(sx-Math.floor(r*0.26)+vx, cy-Math.floor(r*0.34), Math.floor(r*0.32), 0, Math.PI*2); ctx.fill();
+  // Highlight — guaranteed inside: dist(r*0.24,r*0.32)+r*0.28 = r*0.680 ≤ r
+  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.28), amb, lt*0.76);
+  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.24), cy-Math.floor(r*0.32), Math.floor(r*0.28), 0, Math.PI*2); ctx.fill();
 
-  // Top glint
-  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.44), amb, lt*0.68);
-  ctx.beginPath(); ctx.arc(sx-Math.floor(r*0.36)+vx, cy-Math.floor(r*0.56), Math.floor(r*0.16), 0, Math.PI*2); ctx.fill();
+  // Glint — guaranteed inside: dist(r*0.34,r*0.48)+r*0.14 = r*0.728 ≤ r
+  ctx.fillStyle = tint(mixHex(tc.c1,'#ffffff',0.44), amb, lt*0.70);
+  ctx.beginPath(); ctx.arc(mx-Math.floor(r*0.34), cy-Math.floor(r*0.48), Math.floor(r*0.14), 0, Math.PI*2); ctx.fill();
 }
 
 // ── Lamp renderer ─────────────────────────────────────────────────────────────
@@ -470,13 +479,23 @@ export function render() {
     day:       [['#0c50a0',0],['#2a78bc',0.28],['#58a2da',0.55],['#7ebef0',0.78],['#a4d6f8',1]],
     afternoon: [['#0e4e98',0],['#2a6ab4',0.28],['#508ec6',0.54],['#a87040',0.80],['#dc9248',0.92],['#eeb668',1]],
     evening:   [['#060918',0],['#170e38',0.16],['#621e50',0.36],['#bc4836',0.58],['#dc6a36',0.76],['#e88e4c',1]],
-    night:     [['#020306',0],['#050912',0.28],['#090e1e',0.58],['#0c1624',0.82],['#101c2c',1]],
+    night:     [['#010208',0],['#020610',0.16],['#040b1a',0.40],['#060e1e',0.64],['#0b1526',0.84],['#111e30',1]],
   };
   const sSt = SKY_STOPS[tod];
   const skyG = ctx.createLinearGradient(0,0,0,HORIZON_Y+60);
   for (const [c,p] of sSt) skyG.addColorStop(p,c);
   ctx.fillStyle = skyG;
   ctx.fillRect(0,0,cw,HORIZON_Y+60);
+
+  // City glow bloom at horizon for night/evening
+  if (night) {
+    const cgG = ctx.createLinearGradient(0, HORIZON_Y-52, 0, HORIZON_Y+8);
+    cgG.addColorStop(0, 'rgba(8,18,48,0)');
+    cgG.addColorStop(0.52, 'rgba(12,24,58,0.17)');
+    cgG.addColorStop(1, 'rgba(20,36,78,0.32)');
+    ctx.fillStyle = cgG;
+    ctx.fillRect(0, HORIZON_Y-52, cw, 60);
+  }
 
   // ── Sun ───────────────────────────────────────────────────────────────────────
   if (hour >= 6 && hour < 18) {
@@ -514,25 +533,32 @@ export function render() {
     const mg2 = ctx.createRadialGradient(moonX,moonY,moonR,moonX,moonY,moonR*6);
     mg2.addColorStop(0,'rgba(155,190,240,0.10)'); mg2.addColorStop(1,'rgba(155,190,240,0)');
     ctx.fillStyle=mg2; ctx.fillRect(moonX-moonR*6,moonY-moonR*6,moonR*12,moonR*12);
-    // Disc
+    // Full moon disc
     ctx.fillStyle='#c6daf0';
     ctx.beginPath(); ctx.arc(moonX,moonY,moonR,0,Math.PI*2); ctx.fill();
-    // Crescent shadow
-    ctx.fillStyle=sSt[0][0];
-    ctx.beginPath(); ctx.arc(moonX+3,moonY-1,Math.round(moonR*0.82),0,Math.PI*2); ctx.fill();
-    // Surface glint
-    ctx.fillStyle='#e6f0ff';
-    ctx.beginPath(); ctx.arc(moonX-2,moonY-2,Math.floor(moonR*0.30),0,Math.PI*2); ctx.fill();
+    // Surface shadow tone (lower-right)
+    ctx.fillStyle='#a8c0e0';
+    ctx.beginPath(); ctx.arc(moonX+2,moonY+2,Math.floor(moonR*0.70),0,Math.PI*2); ctx.fill();
+    // Main lit face
+    ctx.fillStyle='#d8ecff';
+    ctx.beginPath(); ctx.arc(moonX-1,moonY-1,Math.floor(moonR*0.78),0,Math.PI*2); ctx.fill();
+    // Bright highlight
+    ctx.fillStyle='#eef6ff';
+    ctx.beginPath(); ctx.arc(moonX-2,moonY-2,Math.floor(moonR*0.34),0,Math.PI*2); ctx.fill();
   }
 
   // ── Stars ─────────────────────────────────────────────────────────────────────
   if (hour>=20||hour<6||tod==='dawn'||tod==='evening') {
-    const sA = tod==='dawn'?0.15:tod==='evening'?0.22:0.48;
-    for (let i=0;i<90;i++) {
-      const stx=(i*397+53)%cw, sty=(i*223+19)%Math.floor(HORIZON_Y*0.90);
-      const bri=((animTick/120+i*0.37)%1);
-      ctx.fillStyle=`rgba(210,228,255,${(sA*(0.35+bri*0.65)).toFixed(2)})`;
-      ctx.fillRect(stx,sty,i%11===0?2:1,i%11===0?2:1);
+    const sAlpha = tod==='dawn'?0.13:tod==='evening'?0.21:0.56;
+    for (let i=0;i<72;i++) {
+      const stx = ((i*397+53)^(i*31))%cw;
+      const sty = ((i*223+19)^(i*47))%Math.floor(HORIZON_Y*0.85);
+      const tier = i<14?2:i<44?1:0;
+      const baseA = tier===2?sAlpha:tier===1?sAlpha*0.60:sAlpha*0.30;
+      const tw = i%3===0?0.22*(Math.sin((animTick/160+i*2.1)*Math.PI*2)*0.5+0.5):0;
+      const a = Math.max(0.03, baseA*(1+tw*0.40));
+      ctx.fillStyle = `rgba(${tier===2?'255,248,235':tier===1?'215,230,255':'170,195,238'},${a.toFixed(2)})`;
+      ctx.fillRect(stx, sty, tier===2?2:1, tier===2?2:1);
     }
   }
 
