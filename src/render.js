@@ -27,13 +27,13 @@ export function resizeCanvas() {
     left = Math.floor((vw - displayW) / 2);
     top  = Math.floor((vh - displayH) / 2);
   } else {
-    // Desktop: letterbox/pillarbox below HUD — unchanged
+    // Desktop: zoom-fill below HUD — no black bars
     const hudH = hud ? hud.offsetHeight : 40;
     const availW = vw;
     const availH = vh - hudH;
-    const ratio  = LOGICAL_W / LOGICAL_H;
-    if (availW / availH > ratio) { displayH = availH; displayW = Math.floor(displayH * ratio); }
-    else { displayW = availW; displayH = Math.floor(displayW / ratio); }
+    const scale = Math.max(availW / LOGICAL_W, availH / LOGICAL_H);
+    displayW = Math.round(LOGICAL_W * scale);
+    displayH = Math.round(LOGICAL_H * scale);
     left = Math.floor((availW - displayW) / 2);
     top  = hudH + Math.floor((availH - displayH) / 2);
   }
