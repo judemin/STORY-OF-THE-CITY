@@ -93,15 +93,15 @@ const TILE_W_BASE = CW / GRID_W;
 const FLOOR_H_BASE = 13;
 
 const LAYERS = [
-  { yMin: 0,  yMax: 7,  baseY: 208, tw: TILE_W_BASE*0.24, fh: FLOOR_H_BASE*0.20, mute: 0.88 },
-  { yMin: 8,  yMax: 15, baseY: 264, tw: TILE_W_BASE*0.42, fh: FLOOR_H_BASE*0.36, mute: 0.66 },
-  { yMin: 16, yMax: 23, baseY: 326, tw: TILE_W_BASE*0.62, fh: FLOOR_H_BASE*0.56, mute: 0.36 },
-  { yMin: 24, yMax: 31, baseY: 382, tw: TILE_W_BASE*0.82, fh: FLOOR_H_BASE*0.78, mute: 0.14 },
-  { yMin: 32, yMax: 41, baseY: 390, tw: TILE_W_BASE*1.00, fh: FLOOR_H_BASE*1.00, mute: 0.00 },
+  { yMin: 0,  yMax: 7,  baseY: 228, tw: TILE_W_BASE*0.24, fh: FLOOR_H_BASE*0.20, mute: 0.88 },
+  { yMin: 8,  yMax: 15, baseY: 284, tw: TILE_W_BASE*0.42, fh: FLOOR_H_BASE*0.36, mute: 0.66 },
+  { yMin: 16, yMax: 23, baseY: 346, tw: TILE_W_BASE*0.62, fh: FLOOR_H_BASE*0.56, mute: 0.36 },
+  { yMin: 24, yMax: 31, baseY: 402, tw: TILE_W_BASE*0.82, fh: FLOOR_H_BASE*0.78, mute: 0.14 },
+  { yMin: 32, yMax: 41, baseY: 410, tw: TILE_W_BASE*1.00, fh: FLOOR_H_BASE*1.00, mute: 0.00 },
 ];
 
-const HORIZON_Y  = 192;
-const ROAD_TOP   = 416;
+const HORIZON_Y  = 212;
+const ROAD_TOP   = 436;
 const ROAD_H     = 50;
 const CURB_H     = 4;
 const SIDEWALK_H = 22;
@@ -508,7 +508,7 @@ export function render() {
   if (hour >= 6 && hour < 18) {
     const sunT = clamp((hour-6)/12);
     const sunX = Math.round(cw*(0.90-sunT*0.80));
-    const sunY = Math.round(HORIZON_Y*(0.84-Math.sin(sunT*Math.PI)*0.68));
+    const sunY = Math.round(HORIZON_Y*(0.84-Math.sin(sunT*Math.PI)*0.60));
     const sunR = tod==='dawn'?5:tod==='morning'||tod==='afternoon'?7:9;
     const sunC = tod==='dawn'?'#ff7838':tod==='morning'?'#ffc048':tod==='afternoon'?'#ffbe48':'#fff0a0';
 
