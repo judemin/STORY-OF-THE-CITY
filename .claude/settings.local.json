@@ -7,7 +7,13 @@
       "Bash(python3 -m http.server 5173)",
       "Bash(curl -s http://localhost:5173/)",
       "WebSearch",
-      "Bash(npx --yes serve . -p 3000)"
+      "Bash(npx --yes serve . -p 3000)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(node -e \"const v = require\\('./node_modules/vite/package.json'\\); console.log\\('vite:', v.version\\)\")",
+      "Bash(node -e \"const v = require\\('./node_modules/@vitejs/plugin-react/package.json'\\); console.log\\('plugin-react:', v.version\\)\")",
+      "Bash(timeout 10 npx vite build)",
+      "Bash(node *)"
     ]
   }
 }

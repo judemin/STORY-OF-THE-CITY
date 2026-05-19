@@ -5,6 +5,16 @@ Story of the City is a pixel-art healing focus timer service.
 The main experience is watching a living city grow while the timer runs.
 The city must feel alive, readable, dense, and beautiful at all times.
 
+## Tech stack
+- **Build**: Vite + React (JavaScript, no TypeScript)
+- **Entry**: `index.html` → `src/main.jsx` → `src/App.jsx`
+- **Logic modules**: `src/*.js` (React 비의존, 기존 그대로)
+- **CSS**: `styles/base.css`, `styles/hud.css`, `styles/canvas.css`
+- **Dev**: `npm run dev` (Vite dev server, http://localhost:5173)
+- **Build**: `npm run build` → `dist/`
+- **Preview**: `npm run preview`
+- **Deploy**: Vercel Git 연동 — framework: vite, output: dist
+
 ## Output rules
 - Do not output full code, functions, diffs, or full file contents unless explicitly requested.
 - Keep explanations short.

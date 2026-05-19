@@ -4,32 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Story of the City</title>
-  <link rel="icon" type="image/png" href="src/image/icon.png" />
-  <!-- Changed: split CSS by responsibility -->
-  <link rel="stylesheet" href="styles/base.css" />
-  <link rel="stylesheet" href="styles/hud.css" />
-  <link rel="stylesheet" href="styles/canvas.css" />
+  <link rel="icon" type="image/png" href="/src/image/icon.png" />
+  <link rel="stylesheet" href="/styles/base.css" />
+  <link rel="stylesheet" href="/styles/hud.css" />
+  <link rel="stylesheet" href="/styles/canvas.css" />
 </head>
 <body>
-
-  <div id="hud">
-    <span id="timer-display">00:00:00</span>
-    <button id="btn-start" class="hud-btn">START</button>
-    <button id="btn-pause" class="hud-btn">PAUSE</button>
-  </div>
-
-  <canvas id="city-canvas"></canvas>
-
-  <div id="pause-overlay">
-    <div id="pause-card">
-      <h1 id="pause-title">STORY OF THE CITY</h1>
-      <p id="pause-tagline">집중할수록, 도시가 자란다</p>
-      <button id="pause-action-btn" class="hud-btn">START</button>
-    </div>
-  </div>
-
-  <!-- Changed: use module bootstrap entry -->
-  <script type="module" src="src/main.js"></script>
-
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
