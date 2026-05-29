@@ -7,4 +7,5 @@ export const state = {
   stage:       0,
   tier:        0,
   animFrame:   null,
+  userId:      null,
 };

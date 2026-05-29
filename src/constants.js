@@ -1,6 +1,6 @@
 // Changed: extracted from game.js – all fixed config lives here
 export const TILE  = 8;
-export const MAX_H = 24 * 3600;
+export const MAX_H = 999 * 3600;
 export const ISO_TILE_W = 30; // Changed: isometric tile width
 export const ISO_TILE_H = 14; // Changed: isometric tile height
 export const FLOOR_H = 12; // Changed: building floor height in pixels

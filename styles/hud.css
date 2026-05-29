@@ -60,6 +60,7 @@
   background: #12122a;
 }
 
+
 /* ── HUD bar ── */
 
 #hud {
@@ -82,8 +83,6 @@
   user-select: none;
 }
 
-/* ── Timer text ── */
-
 #timer-display {
   font-size: 11px;
   letter-spacing: 3px;
@@ -93,79 +92,409 @@
   text-shadow: 0 0 8px #3333aa66;
 }
 
-/* ── Buttons ── */
-
 .hud-btn {
   font-family: 'Press Start 2P', monospace;
   font-size: 7px;
   letter-spacing: 1px;
-
   padding: 5px 10px;
   background: transparent;
   border: 2px solid #252538;
   color: #666688;
   cursor: pointer;
   outline: none;
-
   image-rendering: pixelated;
   transition: border-color 80ms step-end, color 80ms step-end;
 }
 
-.hud-btn:hover {
-  border-color: #4444aa;
-  color: #aaaacc;
+.hud-btn:hover  { border-color: #4444aa; color: #aaaacc; }
+.hud-btn:active { border-color: #7777cc; color: #ddddff; background: #1a1a2e; }
+
+/* ── Auth overlay ── */
+
+#auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 6, 14, 0.96);
 }
 
-.hud-btn:active {
-  border-color: #7777cc;
-  color: #ddddff;
-  background: #1a1a2e;
+#auth-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 52px 64px;
+  background: rgba(8, 8, 18, 0.92);
+  border: 2px solid #22223a;
+  text-align: center;
+  width: 400px;
 }
 
-/* ── Mobile overrides (≤768px) ── */
+#auth-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  letter-spacing: 4px;
+  color: #c4c4e0;
+  text-shadow: 0 0 18px #4444aa88;
+}
+
+.auth-tabs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-tab {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  background: transparent;
+  border: none;
+  color: #383858;
+  cursor: pointer;
+  outline: none;
+  padding: 2px 0;
+  transition: color 80ms step-end;
+}
+
+.auth-tab.active  { color: #9090b8; }
+.auth-tab:hover:not(.active) { color: #5a5a88; }
+
+.auth-tab-sep {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #22223a;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+}
+
+.auth-input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  width: 100%;
+  padding: 14px 16px;
+  background: #0a0a14;
+  border: 2px solid #22223a;
+  color: #9090b8;
+  outline: none;
+}
+
+.auth-input:focus         { border-color: #383860; }
+.auth-input::placeholder  { color: #2a2a44; }
+
+.auth-error {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #884444;
+  text-align: center;
+  line-height: 2;
+  letter-spacing: 0.5px;
+}
+
+.auth-notice {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #60607a;
+  text-align: center;
+  line-height: 2.4;
+  letter-spacing: 1px;
+}
+
+.auth-submit {
+  width: 100%;
+  font-size: 9px;
+  letter-spacing: 3px;
+  padding: 14px 0;
+  border-color: #383860;
+  color: #9090b8;
+  margin-top: 4px;
+}
+
+.auth-submit:hover  { border-color: #5a5acc; color: #ccccee; }
+.auth-submit:active { border-color: #8888dd; color: #eeeeff; background: #12122a; }
+.auth-submit:disabled { opacity: 0.35; cursor: default; }
+
+/* ── Stats Panel (중앙 — 도시/타이머 위에 뜨되 멈추지 않음) ── */
+
+#stats-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#stats-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 48px 56px;
+  background: rgba(8, 8, 18, 0.92);
+  border: 2px solid #22223a;
+  text-align: center;
+  min-width: 360px;
+  pointer-events: all;
+}
+
+.stats-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: #c4c4e0;
+  text-shadow: 0 0 18px #4444aa88;
+}
+
+.stats-tabs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stats-tab {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  background: transparent;
+  border: none;
+  color: #383858;
+  cursor: pointer;
+  outline: none;
+  padding: 2px 0;
+  transition: color 80ms step-end;
+}
+
+.stats-tab.active { color: #9090b8; }
+.stats-tab:hover:not(.active) { color: #5a5a88; }
+
+.stats-tab-sep {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #22223a;
+}
+
+.stats-loading {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #383858;
+  letter-spacing: 1px;
+}
+
+.stats-sub {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #484868;
+  letter-spacing: 1px;
+}
+
+.stats-sub strong { color: #8888b8; }
+
+/* Week view bars */
+
+.stats-week {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.stats-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.stats-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 32px;
+}
+
+.stats-bar-val {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 5px;
+  color: #484868;
+  min-height: 8px;
+  white-space: nowrap;
+}
+
+.stats-bar-track {
+  width: 18px;
+  height: 80px;
+  background: #0e0e1e;
+  border: 1px solid #1a1a2e;
+  display: flex;
+  align-items: flex-end;
+}
+
+.stats-bar-fill       { width: 100%; background: #2a2a52; min-height: 2px; }
+.stats-bar-fill.today { background: #5050aa; }
+
+.stats-bar-label       { font-family: 'Press Start 2P', monospace; font-size: 5px; color: #383858; }
+.stats-bar-label.today { color: #7070a8; }
+
+/* Month view calendar */
+
+.stats-month {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.stats-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stats-month-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #8888b8;
+  min-width: 120px;
+  text-align: center;
+}
+
+.stats-nav-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  background: transparent;
+  border: 2px solid #22223a;
+  color: #484868;
+  cursor: pointer;
+  outline: none;
+  padding: 4px 10px;
+  transition: color 80ms step-end, border-color 80ms step-end;
+}
+
+.stats-nav-btn:hover:not(:disabled) { border-color: #383860; color: #8888b8; }
+.stats-nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+.stats-cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  width: 100%;
+}
+
+.stats-cal-head {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 5px;
+  color: #2e2e4e;
+  text-align: center;
+  padding: 4px 0;
+  letter-spacing: 0.5px;
+}
+
+.stats-cal-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid #14142a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: #0e0e1e;
+  min-height: 36px;
+}
+
+.stats-cal-cell.empty   { background: transparent; border-color: transparent; }
+.stats-cal-cell.today   { border-color: #5050aa; }
+
+.stats-cal-day {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: #484868;
+  line-height: 1;
+}
+
+.stats-cal-cell.today .stats-cal-day { color: #9090c8; }
+
+.stats-cal-time {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 5px;
+  color: #8888aa;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.stats-back-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 2px;
+  background: transparent;
+  border: none;
+  color: #383858;
+  cursor: pointer;
+  padding: 2px 0;
+  outline: none;
+  transition: color 80ms step-end;
+  margin-top: -4px;
+}
+
+.stats-back-btn:hover { color: #6666aa; }
+
+/* ── Mobile (≤768px) ── */
 
 @media (max-width: 768px) {
   #hud {
-    top: auto;
-    bottom: 0;
-    height: 56px;
+    top: auto; bottom: 0; height: 56px;
     background: rgba(6, 6, 16, 0.78);
-    border-bottom: none;
-    border-top: 1px solid #1a1a2a;
+    border-bottom: none; border-top: 1px solid #1a1a2a;
     gap: 28px;
   }
 
-  #timer-display {
-    font-size: 10px;
-    letter-spacing: 2px;
-    min-width: 68px;
-  }
+  #timer-display { font-size: 10px; letter-spacing: 2px; min-width: 68px; }
 
-  .hud-btn {
-    font-size: 7px;
-    padding: 9px 16px;
-    border-width: 1px;
-  }
+  .hud-btn { font-size: 7px; padding: 9px 16px; border-width: 1px; }
 
   #pause-card {
-    padding: 40px 28px;
-    gap: 22px;
-    width: 88vw;
-    max-width: 320px;
+    padding: 40px 28px; gap: 22px;
+    width: 88vw; max-width: 320px;
   }
 
-  #pause-title {
-    font-size: 10px;
-    letter-spacing: 2px;
+  #pause-title { font-size: 10px; letter-spacing: 2px; }
+  #pause-tagline { font-size: 12px; letter-spacing: 1px; }
+  #pause-action-btn { font-size: 7px; padding: 10px 22px; letter-spacing: 2px; }
+
+  #auth-card {
+    padding: 40px 24px; gap: 22px;
+    width: 90vw; max-width: 340px;
   }
 
-  #pause-tagline {
-    font-size: 12px;
-    letter-spacing: 1px;
+  #auth-title { font-size: 10px; letter-spacing: 2px; }
+  .auth-input { font-size: 7px; padding: 12px 12px; }
+  .auth-submit { font-size: 7px; padding: 12px 0; }
+
+  #stats-card {
+    padding: 36px 20px;
+    gap: 18px;
+    width: 92vw;
+    max-width: 380px;
+    min-width: unset;
   }
 
-  #pause-action-btn {
-    font-size: 7px;
-    padding: 10px 22px;
-  }
+  .stats-title { font-size: 10px; letter-spacing: 2px; }
+  .stats-cal-cell { min-height: 28px; }
+  .stats-cal-day { font-size: 5px; }
+  .stats-cal-time { display: none; }
 }

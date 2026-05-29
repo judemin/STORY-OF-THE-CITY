@@ -46,4 +46,15 @@ window.addEventListener('resize', () => {
   buildCity();
 });
 
+// 로그인 후 totalSecs가 변경됐을 때 stage/city/display 재동기화
+window.addEventListener('sotc:login', () => {
+  const newStage = calcStage(state.totalSecs);
+  if (newStage !== state.stage) {
+    state.stage = newStage;
+    state.tier  = calcTier(newStage);
+    buildCity();
+  }
+  updateTimerDisplay();
+});
+
 requestAnimationFrame(tick);
