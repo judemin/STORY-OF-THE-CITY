@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AuthModal from './components/AuthModal.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
-import { getSession, onAuthStateChange } from './lib/auth.js';
+import { getSession, onAuthStateChange, signOut } from './lib/auth.js';
 import { loadTodayFocus } from './lib/db.js';
 import { state } from './state.js';
 import { mergeRemoteFocus } from './storage.js';
@@ -55,7 +55,10 @@ export default function App() {
         <button id="btn-start" className="hud-btn">START</button>
         <button id="btn-pause" className="hud-btn">PAUSE</button>
         {user && (
-          <button className="hud-btn" onClick={() => setShowStats(v => !v)}>STATS</button>
+          <>
+            <button className="hud-btn" onClick={() => setShowStats(v => !v)}>STATS</button>
+            <button className="hud-btn" onClick={() => signOut()}>LOGOUT</button>
+          </>
         )}
       </div>
 

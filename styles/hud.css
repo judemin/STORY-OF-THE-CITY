@@ -126,19 +126,20 @@
   flex-direction: column;
   align-items: center;
   gap: 28px;
-  padding: 52px 64px;
+  padding: 48px 52px;
   background: rgba(8, 8, 18, 0.92);
   border: 2px solid #22223a;
   text-align: center;
-  width: 400px;
+  width: min(420px, 92vw);
 }
 
 #auth-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: 16px;
-  letter-spacing: 4px;
+  font-size: 12px;
+  letter-spacing: 3px;
   color: #c4c4e0;
   text-shadow: 0 0 18px #4444aa88;
+  white-space: nowrap;
 }
 
 .auth-tabs {
@@ -477,12 +478,12 @@
   #pause-action-btn { font-size: 7px; padding: 10px 22px; letter-spacing: 2px; }
 
   #auth-card {
-    padding: 40px 24px; gap: 22px;
-    width: 90vw; max-width: 340px;
+    padding: 36px 24px; gap: 20px;
+    width: 92vw;
   }
 
   #auth-title { font-size: 10px; letter-spacing: 2px; }
-  .auth-input { font-size: 7px; padding: 12px 12px; }
+  .auth-input { font-size: 7px; padding: 12px; }
   .auth-submit { font-size: 7px; padding: 12px 0; }
 
   #stats-card {
