@@ -7,7 +7,6 @@ export default function AuthModal() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -18,7 +17,7 @@ export default function AuthModal() {
         await signIn(email, password);
       } else {
         await signUp(email, password);
-        setDone(true);
+        await signIn(email, password);
       }
     } catch (err) {
       setError(err.message);
@@ -30,7 +29,6 @@ export default function AuthModal() {
   function switchTab(t) {
     setTab(t);
     setError('');
-    setDone(false);
   }
 
   return (
@@ -38,13 +36,7 @@ export default function AuthModal() {
       <div id="auth-card">
         <h1 id="auth-title">STORY OF THE CITY</h1>
 
-        {done ? (
-          <>
-            <p className="auth-notice">확인 이메일을 보냈습니다</p>
-            <p className="auth-notice">메일함을 확인해 주세요</p>
-          </>
-        ) : (
-          <>
+        <>
             <div className="auth-tabs">
               <button
                 className={`auth-tab${tab === 'login' ? ' active' : ''}`}
@@ -82,7 +74,6 @@ export default function AuthModal() {
               </button>
             </form>
           </>
-        )}
       </div>
     </div>
   );
