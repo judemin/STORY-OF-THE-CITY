@@ -446,7 +446,8 @@ const CAR_COLORS_DAY = [
 const CAR_TYPES = ['sedan', 'sedan', 'van', 'van', 'truck', 'bus'];
 
 function addTraffic(types, rand, s) {
-  const spacing = [18, 15, 12, 10, 8][s];
+  // 차선당 고정 대수 — 균등 간격 offset 배정으로 겹침/깜빡임 원천 차단
+  const countPerLane = [2, 3, 4, 5, 6][s];
   const carMix = [
     ['sedan'],
     ['sedan', 'sedan', 'van'],
@@ -456,22 +457,20 @@ function addTraffic(types, rand, s) {
   ][s];
   const speedBase = [0.0016, 0.0018, 0.0022, 0.0026, 0.0030][s];
 
-  for (let y = 0; y < GRID_H; y++) {
-    for (let x = 0; x < GRID_W; x++) {
-      const axis = roadAxis(x, y);
-      if (!axis) continue;
-      if ((x + y) % spacing !== 0) continue;
-      const carType = carMix[Math.floor(rand() * carMix.length)];
+  for (const dir of [1, -1]) {
+    for (let i = 0; i < countPerLane; i++) {
+      const carType  = carMix[Math.floor(rand() * carMix.length)];
       const carColor = CAR_COLORS_DAY[Math.floor(rand() * CAR_COLORS_DAY.length)];
       cityTraffic.push({
-        axis,
-        lane: axis === 'h' ? y : x,
-        dir: axis === 'h' ? (y <= MY ? 1 : -1) : (x <= MX ? -1 : 1),
-        speed: (speedBase + ((x + y) % 5) * 0.00015) / 24,
-        offset: ((x * 41 + y * 23) % 100) / 100,
+        axis:    'h',
+        dir,
+        // 각 차량은 0~1 구간을 countPerLane 등분한 위치에서 출발 → 절대 겹치지 않음
+        offset:  i / countPerLane,
+        // 속도 편차를 최소화(0.00005 이내)해 장시간 후에도 간격 유지
+        speed:   (speedBase + (i % 3) * 0.00005) / 24,
         carType,
         carColor,
-        carId: x * 100 + y,
+        carId:   dir > 0 ? i : 100 + i,
       });
     }
   }

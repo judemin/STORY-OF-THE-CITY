@@ -684,36 +684,12 @@ export function render() {
   // ── Traffic ───────────────────────────────────────────────────────────────────
   const laneTop=ROAD_TOP+Math.floor(ROAD_H*0.20);
   const laneBot=ROAD_TOP+Math.floor(ROAD_H*0.68);
-
-  function carBodyL(type){return type==='bus'?28:type==='truck'?22:type==='van'?17:14;}
-
-  const rightCars=[], leftCars=[];
   for (const tr of cityTraffic) {
     if (tr.axis!=='h') continue;
-    if (tr.carId%2!==0) continue;
     const t=(animTick*tr.speed+tr.offset)%1;
     const carX=tr.dir>0?t*(cw+60)-30:(cw+30)-t*(cw+60);
-    if (carX<-40||carX>cw+40) continue;
-    (tr.dir>0?rightCars:leftCars).push({tr,carX});
-  }
-
-  // 우향: carX 오름차순 → 직전 차 오른쪽 끝 기준 간격 보장
-  rightCars.sort((a,b)=>a.carX-b.carX);
-  let rEdge=-999;
-  for (const {tr,carX} of rightCars) {
-    if (carX<rEdge+6) continue;
-    draw2DCar(tr,carX,laneTop,tod);
-    rEdge=carX+carBodyL(tr.carType);
-  }
-
-  // 좌향: carX 내림차순 → 직전 차 왼쪽 끝 기준 간격 보장
-  leftCars.sort((a,b)=>b.carX-a.carX);
-  let lEdge=9999;
-  for (const {tr,carX} of leftCars) {
-    const bl=carBodyL(tr.carType);
-    if (carX>lEdge-6) continue;
-    draw2DCar(tr,carX,laneBot,tod);
-    lEdge=carX-bl;
+    if (carX<-32||carX>cw+32) continue;
+    draw2DCar(tr,carX,tr.dir>0?laneTop:laneBot,tod);
   }
 
   // ── Bottom fill ───────────────────────────────────────────────────────────────
